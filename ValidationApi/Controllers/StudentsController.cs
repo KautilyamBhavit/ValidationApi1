@@ -15,7 +15,14 @@ namespace ValidationApi.Controllers
                 return BadRequest(ModelState);
             }
 
-            return Ok(student);
+            var response = new ApiResponse<Student>
+            {
+                Success = true,
+                Message = "Student created successfully",
+                Data = student
+            };
+
+            return Ok(response);
         }
 
         [HttpGet("error")]

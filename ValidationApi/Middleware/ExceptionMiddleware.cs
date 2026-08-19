@@ -1,5 +1,6 @@
 ﻿using System.Net;
 using System.Text.Json;
+using ValidationApi.Models;
 
 namespace ValidationApi.Middleware
 {
@@ -32,14 +33,20 @@ namespace ValidationApi.Middleware
             context.Response.StatusCode =
                 (int)HttpStatusCode.InternalServerError;
 
-            var response = new
+            var response = new ApiResponse<object>
             {
-                success = true,
-                message = exception.Message,
-                statusCode = context.Response.StatusCode
+                Success = false,
+                Message = exception.Message,
+                Data = null
             };
 
-            var jsonResponse = JsonSerializer.Serialize(response);
+            var options = new JsonSerializerOptions
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+            };
+
+            var jsonResponse =
+                JsonSerializer.Serialize(response, options);
 
             await context.Response.WriteAsync(jsonResponse);
         }
